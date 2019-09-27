@@ -1,0 +1,206 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Power of 2 training</title>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/8ce14264b2.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      border: none;
+      box-sizing: border-box;
+      font-size: inherit;
+      color: inherit;
+    }
+
+    html, body {
+      font-size: 5vmin;
+      font-family: 'Open Sans', sans-serif;
+      color: #383838;
+    }
+
+    #form {
+      position: absolute;
+      background-color: #fff;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      padding: 1.5em;
+      border: 0.05em solid rgb(212, 212, 212);
+      border-radius: 0.4em;
+    }
+
+    button {
+      padding: 0.5em 1em;
+      border-radius: 0.2em;
+      background-color: #0984e3;
+      color: #fff;
+      width: 100%;
+      margin-top: 1em;
+    }
+
+    .enonce {
+      font-weight: bold;
+    }
+    h1 {
+      font-size: 1.5em;
+      display: flex;
+      text-align: center;
+    }
+    input {
+      width: 3em;
+      border-bottom:0.15rem  solid #dfdfdf;
+      margin-left: 0.5em;
+      transition: border-bottom 0.3s ease-in-out;
+    }
+
+    input:focus {
+      border-bottom:0.15rem  solid #0984e3;
+    }
+
+    #setting {
+      display: block;
+      position: absolute;
+      top: 1em;
+      right: 1em;
+      display: grid;
+      justify-items: end;
+    }
+
+    #setting-button {
+      width: 1.5em;
+      height: 1.5em;
+      border: 0.05em solid rgb(212, 212, 212);
+      border-radius: 1em;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #setting-content {
+      position: relative;
+      top: 0.3em;
+      opacity: 0;
+      display: none;
+      padding: 1.5em;
+      border: 0.05em solid rgb(212, 212, 212);
+      background-color: #fff;
+      border-radius: 0.4em;
+      font-size: 0.8em;
+    }
+
+    #setting-content.active {
+      opacity: 1;
+      display: initial;
+    }
+
+    label {
+      font-weight:bold;
+    }
+
+
+  </style>
+</head>
+<body>
+  
+    <form id="form" autocomplete="off">
+        <h1>
+          <span class="enonce">2<sup id="value"></sup> = </span>
+          <input id="response" type="text">
+        
+        </h1>
+        <button id="sendButton" onclick="send()" >Valid</button>
+    </form>
+    <div id="setting">
+      <div id="setting-button">
+        <i onclick="document.getElementById('setting-content').classList.toggle('active')" class="fas fa-cog"></i>
+      </div>
+      <div id="setting-content">
+        <label for="para">min :</label> 2 <sup><input type="number" name="min" id="min" value="-5"></sup> <br>
+        <label for="para">max :</label> 2 <sup><input type="number" name="max" id="max" value="16"></sup>
+      </div>
+    </div>
+</body>
+
+<script>
+  let msg = false;
+  let sendButton = document.getElementById('sendButton');
+  let response = document.getElementById('response');
+  response.value = '';
+  let value  = document.getElementById('value');
+  let max  = document.getElementById('max');
+  let min  = document.getElementById('min');
+
+
+  let form  = document.getElementById('form');
+  form.addEventListener("submit",(event) => {
+    event.preventDefault();
+  });
+
+  response.addEventListener("input",(event) => {
+    response.style.color = 'inherit';
+    //console.log(event.data);
+    
+    if (msg) {
+      response.value = event.data;
+      msg = false;
+    }
+
+    let out = ''
+    for (let i = 0; i < response.value.length; i++) {
+      //console.log(response.value[i]);
+      if (response.value[i].match(RegExp('[0-9.]'))) {
+        out += response.value[i];
+      }
+    }
+    response.value = out;
+  });
+  
+  max.addEventListener("input",(event) => {
+    reWidth();
+  });
+
+  min.addEventListener("input",(event) => {
+    reWidth();
+  });
+
+
+
+
+  function send() {
+    msg = true;
+    if (parseFloat(response.value) == 2**parseInt(value.innerText)) {
+      response.style.color = '#00b894';
+      response.style.borderColor = '#00b894';
+
+      genrate()
+    } else {
+      response.style.color = '#d63031';
+      response.style.borderColor = '#d63031';
+
+    }
+  }
+
+  function genrate() {
+    value.innerText = randomMax();
+    response.focus();
+  }
+
+  function randomMax() {
+    return Math.round(Math.random() * (parseInt(max.value) - parseInt(min.value))) + parseInt(min.value)
+  }
+
+  function reWidth() {
+    response.style.minWidth = Math.max(
+      String(2**parseInt(max.value)).length,
+      String(2**parseInt(min.value)).length ) + 'em';
+    
+  }
+  genrate();
+  reWidth();
+</script>
+</html>
